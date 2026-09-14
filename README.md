@@ -140,7 +140,7 @@ Read operations use the official Robinhood Chain RPC with a restricted same-orig
 
 | Path | Purpose |
 | --- | --- |
-| `artifacts/xindex/` | NoteFi React and Vite web application |
+| `artifacts/notefi/` | NoteFi React and Vite web application |
 | `artifacts/api-server/` | Asset catalog, discovery, ticker, portfolio, search, and restricted RPC endpoints |
 | `artifacts/contracts/` | Solidity contracts, compile scripts, tests, and deployment records |
 | `lib/api-spec/` | Shared API specification |
@@ -170,7 +170,7 @@ pnpm --dir artifacts/api-server run dev
 ### Start the NoteFi web application
 
 ```bash
-pnpm --dir artifacts/xindex run dev
+pnpm --dir artifacts/notefi run dev
 ```
 
 The web application and API server should run together for live catalog, discovery, ticker, portfolio, and RPC fallback functionality.
@@ -180,31 +180,31 @@ The web application and API server should run together for live catalog, discove
 Run frontend type checking:
 
 ```bash
-pnpm --dir artifacts/xindex run typecheck
+pnpm --dir artifacts/notefi run typecheck
 ```
 
 Build the web application:
 
 ```bash
-PORT=5173 BASE_PATH=/ pnpm --dir artifacts/xindex run build
+PORT=5173 BASE_PATH=/ pnpm --dir artifacts/notefi run build
 ```
 
 Validate live routing contracts and known quotes:
 
 ```bash
-pnpm --dir artifacts/xindex run test:routing
+pnpm --dir artifacts/notefi run test:routing
 ```
 
 Run swap helper regression tests:
 
 ```bash
-pnpm --dir artifacts/xindex run test:swap-helpers
+pnpm --dir artifacts/notefi run test:swap-helpers
 ```
 
 Run wallet discovery tests:
 
 ```bash
-pnpm --dir artifacts/xindex run test:wallet-discovery
+pnpm --dir artifacts/notefi run test:wallet-discovery
 ```
 
 Compile and test the Solidity package:
