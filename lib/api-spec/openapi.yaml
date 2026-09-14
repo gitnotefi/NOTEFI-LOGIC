@@ -1,0 +1,112 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: protocol
+    description: Canonical Robinhood Chain market data
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /protocol/assets:
+    get:
+      operationId: getProtocolAssets
+      tags: [protocol]
+      summary: Get canonical stock-token metadata and reference prices
+      parameters:
+        - in: query
+          name: symbols
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Canonical asset data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProtocolAssetsResponse"
+        "400":
+          description: Invalid symbols
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: Upstream unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    ProtocolPrice:
+      type: object
+      properties:
+        bid: { type: string }
+        ask: { type: string }
+        asOf: { type: string, format: date-time }
+        halted: { type: boolean }
+      required: [bid, ask, asOf, halted]
+    ProtocolAsset:
+      type: object
+      properties:
+        symbol: { type: string }
+        name: { type: string }
+        address: { type: string }
+        multiplier: { type: string }
+        decimals: { type: number, format: double }
+        status: { type: string }
+        price:
+          anyOf:
+            - $ref: "#/components/schemas/ProtocolPrice"
+            - type: "null"
+      required: [symbol, name, address, multiplier, decimals, status, price]
+    ProtocolAssetsResponse:
+      type: object
+      properties:
+        source: { type: string }
+        chainId: { type: number, format: double }
+        fetchedAt: { type: string, format: date-time }
+        assets:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProtocolAsset"
+      required: [source, chainId, fetchedAt, assets]
+    ErrorResponse:
+      type: object
+      properties:
+        error: { type: string }
+      required: [error]
+
